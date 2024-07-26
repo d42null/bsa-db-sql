@@ -1,95 +1,102 @@
 # bsa-db-sql
+ER Diagram
 ```mermaid
 erDiagram
-    USER {
-        int ID
-        string Username
-        string FirstName
-        string LastName
-        string Email
-        string Password
-        int AvatarFileID
-        datetime CreatedAt
-        datetime UpdatedAt
+    country {
+        int id PK
+        varchar name
     }
-    FILE {
-        int ID
-        string FileName
-        string MIMEType
-        string Key
-        string URL
-        datetime CreatedAt
-        datetime UpdatedAt
+
+    file {
+        int id PK
+        varchar file_name
+        varchar mime_type
+        varchar key
+        varchar url
+        timestamptz created_at
+        timestamptz updated_at
     }
-    MOVIE {
-        int ID
-        string Title
-        text Description
-        float Budget
-        date ReleaseDate
-        time Duration
-        int DirectorID
-        int CountryID
-        int PosterFileID
-        datetime CreatedAt
-        datetime UpdatedAt
+
+    "user" {
+        int id PK
+        varchar username
+        varchar first_name
+        varchar last_name
+        varchar email
+        varchar password
+        int avatar_file_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
-    GENRE {
-        int ID
-        string Name
+
+    person {
+        int id PK
+        varchar first_name
+        varchar last_name
+        text biography
+        date date_of_birth
+        varchar gender
+        int country_id FK
+        int primary_photo_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
-    MOVIE_GENRE {
-        int MovieID
-        int GenreID
+
+    movie {
+        int id PK
+        varchar title
+        text description
+        numeric budget
+        date release_date
+        interval duration
+        int director_id FK
+        int country_id FK
+        int poster_file_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
-    CHARACTER {
-        int ID
-        string Name
-        text Description
-        string Role
-        int MovieID
-        int PersonID
-        datetime CreatedAt
-        datetime UpdatedAt
+
+    genre {
+        int id PK
+        varchar name
     }
-    PERSON {
-        int ID
-        string FirstName
-        string LastName
-        text Biography
-        date DateOfBirth
-        string Gender
-        int CountryID
-        int PrimaryPhotoID
-        datetime CreatedAt
-        datetime UpdatedAt
+
+    movie_genre {
+        int movie_id FK
+        int genre_id FK
     }
-    PERSON_PHOTO {
-        int PersonID
-        int PhotoFileID
+
+    "character" {
+        int id PK
+        varchar name
+        text description
+        varchar role
+        int movie_id FK
+        int person_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
-    FAVORITE_MOVIES {
-        int UserID
-        int MovieID
+
+    person_photo {
+        int person_id FK
+        int photo_file_id FK
     }
-    COUNTRY {
-        int ID
-        string Name
+
+    favorite_movies {
+        int user_id FK
+        int movie_id FK
     }
-    USER ||--o{ FILE : "has avatar"
-    MOVIE ||--o| FILE : "has poster"
-    MOVIE ||--|| COUNTRY : "is made in"
-    MOVIE ||--|| PERSON : "directed by"
-    MOVIE ||--o{ GENRE : "has genres"
-    MOVIE ||--o{ CHARACTER : "has characters"
-    CHARACTER ||--o| PERSON : "played by"
-    PERSON ||--o{ FILE : "has photos"
-    USER ||--o{ FAVORITE_MOVIES : "has favorite movies"
-    FAVORITE_MOVIES ||--|| MOVIE : "is favorite"
-    FILE ||--o{ USER : "used as avatar by"
-    FILE ||--o{ MOVIE : "used as poster by"
-    FILE ||--o{ PERSON_PHOTO : "is photo of"
-    PERSON_PHOTO ||--|| PERSON : "has photo"
-    PERSON ||--|| COUNTRY : "is from"
+
+    country ||--o{ person: ""
+    country ||--o{ movie: ""
+    file ||--o| "user": ""
+    file ||--o{ person_photo: ""
+    file ||--o| movie: ""
+    "user" ||--o{ favorite_movies: ""
+    person ||--o| movie: ""
+    person ||--o| "character": ""
+    movie ||--o{ "character": ""
+    movie ||--o{ movie_genre: ""
+    genre ||--o{ movie_genre: ""
 
 ```
